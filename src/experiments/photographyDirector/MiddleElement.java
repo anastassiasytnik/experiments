@@ -43,12 +43,18 @@ public class MiddleElement extends Occupant {
     public int bTailCount = UNDEFINED;
     
     /**
-     * Link to the first "valid" photographer-tail. (valid = index isn't too small, bigger than minTailIdx)
+     * Link to the first "valid" photographer-tail when we reach it.
+     * (valid = index isn't too small, bigger than or equal to minTailIdx).
+     * Might be the biggest index available, but still too small because we hadn't parsed far enough yet.
      * We can use it as first check for NEXT actor and ignore all previous photographers, because
      * if their indexes were too small for this actor, they definitely will be too small for actor with bigger index.
      */
     Occupant qualifiedPTail = null;
-    /** Link to the first "valid" backdrop tail. See {@link #qualifiedPTail} for details. */
+    
+    /**
+     * Link to the first "valid" backdrop tail or closest thing we reached so far.
+     * See {@link #qualifiedPTail} for details.
+     */
     Occupant qualifiedBTail = null;
     
     /**
