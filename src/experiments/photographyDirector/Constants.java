@@ -22,5 +22,9 @@ public class Constants {
    */
   public static final boolean PHOTOGRAPHER_FIRST = true;
 
-
+  /**
+   * Represents search state - whether we need to parse input until we find element of certain type
+   * or whether we can move ahead counting artistic photographs using already parsed elements.
+   */
+  public enum Waiting {ON_PHOTOGRAPHER, ON_ACTOR, ON_BACKDROP, NOT_WAITING}
 }
