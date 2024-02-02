@@ -10,6 +10,11 @@ public class PhotographyDirector {
   /** A value for all undefined indexes, counts etc (otherwise non-negative values) */
   public static final int UNDEFINED = -1;
   
+  public static final char P = 'P';
+  public static final char A = 'A';
+  public static final char B = 'B';
+  public static final boolean PHOTOGRAPHER_FIRST = true;
+  
   /**
    * A class to string a list of primitive integers that represent indexes in a string
    * (might add some additional info later) 
@@ -182,9 +187,120 @@ public class PhotographyDirector {
     }
   }
 
+  private enum Waiting {ON_PHOTOGRAPHER, ON_ACTOR, ON_BACKDROP, NOT_WAITING}
+  private static class SearchState {
+    public int x;
+    public int y;
+    
+    
+    public Occupant pb1 = null;
+    public MiddleElement a2 = null;
+    public Occupant pb3 = null;
+    
+    public final boolean photographerFirst;
+    
+    public Waiting obstacle;
+    
+    public SearchState (int x, int y, boolean pFirst, Occupant first) {
+      if (0 >= x || 0 >= y || x > y) {
+        throw new IllegalArgumentException("Need positive distance values where x <= y");
+      }
+      this.x = x;
+      this.y = y;
+      this.photographerFirst = pFirst;
+      this.pb1 = first;
+      if (null == this.pb1) {
+        if (this.photographerFirst) {
+          this.obstacle = Waiting.ON_PHOTOGRAPHER;
+        } else {
+          this.obstacle = Waiting.ON_BACKDROP;
+        }
+      }
+    }
+    
+    public void advance(ParseState parsedInfo) {
+      
+    }
+  }
+  
+  private static class ParseState {
+    public int currentStrIdx = -1;
+    public char currentChar;
+    public final String input;
+    public final int inputLen;
+    public final int x;
+    public final int y;
+    
+    Occupant pListFirst = null;
+    MiddleElement aListFirst = null;
+    Occupant bListFirst = null;
+    Occupant pListLast = null;
+    MiddleElement aListLast = null;
+    Occupant bListLast = null;
+    
+    public ParseState(String input, int x, int y) {
+      // we got arguments check in the task accepting. Probably should put it here also, but meh.
+      this.input = input;
+      this.inputLen = input.length();
+      this.x = x;
+      this.y = y;
+    }
+    public boolean finished() {
+      return inputLen <= currentStrIdx; 
+    }
+    
+    public void processChar() {
+      currentStrIdx++;
+      if (inputLen == currentStrIdx) {
+        return;
+      }
+      currentChar = input.charAt(currentStrIdx);
+      if (P == currentChar) {
+        if (null == pListFirst) {
+          pListFirst = new Occupant(currentStrIdx);
+          pListLast = pListFirst;
+        } else {
+          pListLast = pListLast.append(currentStrIdx);
+        }
+      } else if (B == currentChar) {
+        if (null == bListFirst) {
+          bListFirst = new Occupant(currentStrIdx);
+          bListLast = bListFirst;
+        } else {
+          bListLast = bListLast.append(currentStrIdx);
+        }
+      } else if (A == currentChar) {
+        if (null == aListFirst) {
+          aListFirst = new MiddleElement(currentStrIdx, x, y);
+          aListLast = aListFirst;
+        } else {
+          aListLast = aListLast.append(currentStrIdx, x, y);
+        }
+      }
+      
+    }
+  }
+  
+  public static int getArtisticPhotographCount(int N, String C, int X, int Y) {
+    if (null == C || N != C.length() || 0 == N || 0 >= X || 0 >= Y || X > Y || Y > N) {
+      throw new IllegalArgumentException("Input parameters do not satisfy task criteria");
+    }
+    
+    ParseState parsingState = new ParseState(C, X, Y);
+    SearchState pab = new SearchState(X, Y, PHOTOGRAPHER_FIRST, null);
+    SearchState bap = new SearchState(X, Y, !PHOTOGRAPHER_FIRST, null);
+    
+    for (int i = 0; i < N; i++) {
+      parsingState.processChar();
+      pab.advance(parsingState);
+      bap.advance(parsingState);
+    
+    //TODO finish
+    return 0;
+  }
   public static void main(String[] args) {
     // TODO Auto-generated method stub
-
+    
   }
 
 }
