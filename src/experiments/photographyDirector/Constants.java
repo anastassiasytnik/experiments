@@ -15,6 +15,9 @@ public class Constants {
   /** The character representing a backdrop in the input string */
   public static final char B = 'B';
   
+  /** The character representing an empty space in the input string */
+  public static final char DOT = '.';
+  
   /**
    * A boolean value for the flag that indicates that in the current search for artistic photographs
    * we are looking for photographs where.
