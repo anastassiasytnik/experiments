@@ -13,9 +13,6 @@ import experiments.photographyDirector.InputParser;
  */
 public class SearchProcess {
     
-    public int x;
-    public int y;
-    
     /**
      * The amount of already found artistic photographs.
      */
@@ -94,8 +91,6 @@ public class SearchProcess {
       if (0 >= x || 0 >= y || x > y) {
         throw new IllegalArgumentException("Need positive distance values where x <= y");
       }
-      this.x = x;
-      this.y = y;
       this.photographerFirst = pFirst;
       this.pb1 = first;
       if (null == this.pb1) {
@@ -135,7 +130,9 @@ public class SearchProcess {
           this.countWhileCan(parsedInfo);
         } else {
           this.proceedWith3rd(parsedInfo);
-          // TODO do we need this if statement?
+          if (Waiting.NOT_WAITING == this.obstacle) {
+            this.proceedWithActor(parsedInfo);
+          }
           if (Waiting.NOT_WAITING == this.obstacle) {
             this.countWhileCan(parsedInfo);
           }
@@ -148,6 +145,9 @@ public class SearchProcess {
       } else if (Waiting.ON_BACKDROP == this.obstacle && B == parsedInfo.currentChar) {
         if (this.photographerFirst) {
           this.proceedWith3rd(parsedInfo);
+          if (Waiting.NOT_WAITING == this.obstacle) {
+            this.proceedWithActor(parsedInfo);
+          }
           if (Waiting.NOT_WAITING == this.obstacle) {
             this.countWhileCan(parsedInfo);
           }
@@ -236,12 +236,6 @@ public class SearchProcess {
           parsedInfo.aListLast.qualifiedBTail = this.a2.qualifiedBTail;
           parsedInfo.aListLast.qualifiedPTail = this.a2.qualifiedPTail;
           this.a2 = parsedInfo.aListLast;
-        } else if (this.freshFirst) {
-          // we just got fresh 1st element of photo (photographer or backdrop) - 
-          // we should reset to minimum valid actor that was validated for previous 1st element,
-          // because it might work for this one too.
-          this.a2 = this.aMin;
-          this.freshFirst = false;
         } else {
           // we already processed at least one actor for the current 1st element, so get the next one.
           if (null == this.a2.next) {
@@ -255,19 +249,22 @@ public class SearchProcess {
         // we just got new actor element - at this moment we aren't waiting on anything.
         this.obstacle = Waiting.NOT_WAITING;
         // is this new element fit for artistic photograph or is its index too small or too big?
-        int minAIdx = pb1.idx + x;
-        int maxAIdx = pb1.idx + y;
-        if (minAIdx > this.a2.idx) {
+        int minAIdx = pb1.idx + parsedInfo.x;
+        int maxAIdx = pb1.idx + parsedInfo.y;
+        if (this.freshFirst || minAIdx > this.a2.idx) {
           // the index is too small, need next actor. Update min and last freed
           this.lastFreedA = this.aMin;
           this.aMin = a2;
           // release min tail if it's already calculated and different
-          if (this.photographerFirst && null != this.aMin.qualifiedBTail 
+          if (null != this.lastFreedA && this.photographerFirst && null != this.aMin.qualifiedBTail 
               && this.lastFreedA.qualifiedBTail != this.aMin.qualifiedBTail) {
             this.lastFreedPb3 = this.lastFreedA.qualifiedBTail;
-          } else if (!this.photographerFirst && null != this.aMin.qualifiedPTail
+          } else if (null != lastFreedA && !this.photographerFirst && null != this.aMin.qualifiedPTail
               && this.lastFreedA.qualifiedPTail != this.aMin.qualifiedPTail) {
             this.lastFreedPb3 = this.lastFreedA.qualifiedPTail;
+          }
+          if (this.freshFirst) {
+            this.freshFirst = false;
           }
           continue;
         } else if (maxAIdx < this.a2.idx) {

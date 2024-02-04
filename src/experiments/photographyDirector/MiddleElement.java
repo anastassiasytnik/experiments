@@ -10,9 +10,6 @@ import experiments.photographyDirector.Occupant;
  */
 public class MiddleElement extends Occupant {
     
-    /** index of "A" character in the input string. */
-    public int idx = 0;
-    
     /**
      * The minimum valid value for the index of the 3rd element in the composition
      * for the photo to be artistic.
