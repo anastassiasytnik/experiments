@@ -331,11 +331,6 @@ public class SearchProcess {
         } else if (freshActor) {
           // we weren't waiting on anything, but it's a fresh actor, so start with min qualified for PAB
           this.pb3 = minQualifiedTail;
-          if (photographerFirst) {
-            this.a2.freshPabActor = false;
-          } else {
-            this.a2.freshBapActor = false;
-          }
         } else {
           // we weren't waiting on anything, just going through already parsed things for already used actor - so 
           // is there next?
@@ -350,8 +345,6 @@ public class SearchProcess {
         this.obstacle = Waiting.NOT_WAITING;
         
         if (freshActor) {
-          //it's a fresh actor, so start with min qualified for PAB
-          this.pb3 = minQualifiedTail;
           if (photographerFirst) {
             this.a2.bTailCount = 0;
             this.a2.freshPabActor = false;
@@ -359,6 +352,7 @@ public class SearchProcess {
             this.a2.pTailCount = 0;
             this.a2.freshBapActor = false;
           }
+          freshActor = false;
         }
         // is it fit to complete artistic photo or is its index too small or too big?
         if (this.a2.minTailIdx > this.pb3.idx) {
