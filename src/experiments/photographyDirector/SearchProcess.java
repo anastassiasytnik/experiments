@@ -314,7 +314,7 @@ public class SearchProcess {
         minQualifiedTail = this.a2.qualifiedPTail;
       }
       
-        
+
       do {
         if (null == this.pb3) {
           // this is first - try to get one, we might have parsed it already.
@@ -348,6 +348,18 @@ public class SearchProcess {
         }
         // now we got our new 3rd element of the photo. 
         this.obstacle = Waiting.NOT_WAITING;
+        
+        if (freshActor) {
+          //it's a fresh actor, so start with min qualified for PAB
+          this.pb3 = minQualifiedTail;
+          if (photographerFirst) {
+            this.a2.bTailCount = 0;
+            this.a2.freshPabActor = false;
+          } else {
+            this.a2.pTailCount = 0;
+            this.a2.freshBapActor = false;
+          }
+        }
         // is it fit to complete artistic photo or is its index too small or too big?
         if (this.a2.minTailIdx > this.pb3.idx) {
           // the index is too small - advance to the next if it exists?
@@ -370,7 +382,7 @@ public class SearchProcess {
         } else {
           // the index is just right - add this combination to count and this tail to A count.
           //TODO remove debug output
-          System.out.println("FOUND ARTISTIC: " + this.pb1 + ", " + this.a2 + ", " + this.pb3);
+          System.out.println("FOUND ARTISTIC: " + this.pb1.idx + ", " + this.a2.idx + ", " + this.pb3.idx);
           this.currentCount++;
           if (this.photographerFirst) {
             this.a2.bTailCount++;
