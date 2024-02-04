@@ -49,13 +49,23 @@ public class MiddleElement extends Occupant {
      * We can use it as first check for NEXT actor and ignore all previous photographers, because
      * if their indexes were too small for this actor, they definitely will be too small for actor with bigger index.
      */
-    Occupant qualifiedPTail = null;
+    public Occupant qualifiedPTail = null;
     
     /**
      * Link to the first "valid" backdrop tail or closest thing we reached so far.
      * See {@link #qualifiedPTail} for details.
      */
-    Occupant qualifiedBTail = null;
+    public Occupant qualifiedBTail = null;
+    
+    /**
+     * this flag should be {@code true} if this actor wasn't yet used to find any backdrop artistic tails.
+     */
+    public boolean freshPabActor = true;
+    
+    /**
+     * this flag should be {@code true} if this actor wasn't yet used to find any photographer tails.
+     */
+    public boolean freshBapActor = true;
     
     /**
      * Constructor required by inheritance. Should not be used by actual actor-holding element, 
