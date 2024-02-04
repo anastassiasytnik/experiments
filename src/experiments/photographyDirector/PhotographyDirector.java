@@ -37,7 +37,11 @@ public class PhotographyDirector {
       bap.proceed(parser);
       releaseProcessedObjects(parser, pab, bap);
     }
-    //TODO finish
+    // our search processes could have been waiting on a tail, but it didn't happen, 
+    // this doesn't mean that with a different start we don't have more uncollected artistic photos, 
+    // so make sure to collect the rest
+    pab.proceed(parser);
+    bap.proceed(parser);
     return pab.currentCount + bap.currentCount;
   }
   

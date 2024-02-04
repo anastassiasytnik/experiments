@@ -210,7 +210,6 @@ public class SearchProcess {
         this.proceedWithActor(parsedInfo);
         // TODO consider premature return due to the obstacle
       } while (Waiting.NOT_WAITING == this.obstacle); // TODO forgot what's the second condition.
-      // TODO finish
     }
     
     /**
@@ -236,10 +235,17 @@ public class SearchProcess {
           parsedInfo.aListLast.qualifiedBTail = this.a2.qualifiedBTail;
           parsedInfo.aListLast.qualifiedPTail = this.a2.qualifiedPTail;
           this.a2 = parsedInfo.aListLast;
+        } else if (freshFirst) {
+          // we weren't waiting on anything, but this is a new 1st element and we have to go back 
+          // to minimum eligible actor
+          this.a2 = this.aMin;
         } else {
           // we already processed at least one actor for the current 1st element, so get the next one.
-          if (null == this.a2.next) {
-            // there isn't next actor yet - gotta wait
+          if (null == this.a2.next && parsedInfo.isFinished()) {
+            //there isn't next and not gonna be - we've reached end of input
+            return;
+          } else if (null == this.a2.next) {
+            // there isn't next actor yet, but still might be next - gotta wait
             this.obstacle = Waiting.ON_ACTOR;
             return;
           } else {
@@ -248,10 +254,16 @@ public class SearchProcess {
         }
         // we just got new actor element - at this moment we aren't waiting on anything.
         this.obstacle = Waiting.NOT_WAITING;
+        if (this.freshFirst) {
+          if (null == this.aMin) {
+            this.aMin = a2;
+          }
+          this.freshFirst = false;
+        }
         // is this new element fit for artistic photograph or is its index too small or too big?
         int minAIdx = pb1.idx + parsedInfo.x;
         int maxAIdx = pb1.idx + parsedInfo.y;
-        if (this.freshFirst || minAIdx > this.a2.idx) {
+        if (minAIdx > this.a2.idx) {
           // the index is too small, need next actor. Update min and last freed
           this.lastFreedA = this.aMin;
           this.aMin = a2;
@@ -262,9 +274,6 @@ public class SearchProcess {
           } else if (null != lastFreedA && !this.photographerFirst && null != this.aMin.qualifiedPTail
               && this.lastFreedA.qualifiedPTail != this.aMin.qualifiedPTail) {
             this.lastFreedPb3 = this.lastFreedA.qualifiedPTail;
-          }
-          if (this.freshFirst) {
-            this.freshFirst = false;
           }
           continue;
         } else if (maxAIdx < this.a2.idx) {
@@ -285,10 +294,9 @@ public class SearchProcess {
           }
         }
       } while (Waiting.NOT_WAITING == this.obstacle); // TODO forgot what is second condition is
-      //TODO finish
     }
-
-    /**
+    
+    /** TODO fix scope modifiers
      * This method attempts to find all "artistic tails" (3rd elements) for
      * the current actor and when it does it updates global count as well as the actor's count.
      * It goes on while there's enough of parsed Info.
@@ -334,7 +342,11 @@ public class SearchProcess {
         } else {
           // we weren't waiting on anything, just going through already parsed things for already used actor - so 
           // is there next?
-          if (null == this.pb3.next) {
+          if (null == this.pb3.next && parsedInfo.isFinished()) {
+            // no next and not gonna happen - wrap up
+            return;
+          } else if (null == this.pb3.next) {
+            // no next, but might parse it later
             this.obstacle = waitingForNext;
             return;
           } else {
@@ -385,7 +397,6 @@ public class SearchProcess {
           }
         }
       } while (Waiting.NOT_WAITING == this.obstacle); // TODO forgot what's the second condition
-      //TODO finish      
     }
 
 
