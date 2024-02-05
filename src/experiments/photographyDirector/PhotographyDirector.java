@@ -77,8 +77,6 @@ public class PhotographyDirector {
      * This method only supposed to run once. It doesn't reset values to cleanly count again.
      */
     public void run() {
-      System.out.println("*********STARTING with " + FIRST_ELEM + "************");
-      System.out.println(given.inputStr);
       e1 = given.inputStr.indexOf(FIRST_ELEM);
       while (e1 < e1Limit && UNDEFINED != e1) {
         processActors();
@@ -138,9 +136,6 @@ public class PhotographyDirector {
         } else {
           // it's already counted - use it
           this.artisticCount += aCount;
-          if (0 < aCount) {
-            System.out.println("Found artistics: " + e1 + ", " + e2 + " and " + aCount + " tails");
-          }
         }
       } while (e2 < e2Limit && e2 != UNDEFINED);
     }
@@ -166,7 +161,6 @@ public class PhotographyDirector {
         }
         // only count good tails
         if (UNDEFINED != e3 && e3 <= e3Max) {
-          System.out.println("FOUND ARTISTIC: " + e1 + ", " + e2 + ", " + e3);
           tailCount++;
           this.artisticCount++;
         }
