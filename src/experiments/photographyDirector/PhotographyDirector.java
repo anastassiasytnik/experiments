@@ -36,6 +36,10 @@ public class PhotographyDirector {
   /** The character representing a backdrop in the input string */
   public static final char B = 'B';
   
+  /**
+   * A process that counts only one kind of artistic photographs
+   * (with the same kind of 1st element).
+   */
   public static class ArtisticCounter implements Runnable {
     private final Input given;
     private final char FIRST_ELEM;
@@ -47,9 +51,13 @@ public class PhotographyDirector {
     private int e2Reset = UNDEFINED;
     private int e1 = UNDEFINED;
     private int e2 = UNDEFINED;
-    // TODO do we need this one? or could it be local?
     private int e3 = UNDEFINED;
     
+    /**
+     * Initializes the process with the input and direction of search (PAB or BAP)
+     * @param input - the task input (string length, string, min and max distance)
+     * @param firstElem - the letter that represents 1st element of artistic photo.
+     */
     public ArtisticCounter(Input input, char firstElem ) {
       //TODO check arguments?
       this.FIRST_ELEM = firstElem;
@@ -79,6 +87,11 @@ public class PhotographyDirector {
       }
     }
     
+    /**
+     * This methods attempts to find all "valid" (artistic) actors 
+     * for the current 1st element of the photograph and count the valid tails
+     * for the valid actors, updating global artistic counter.
+     */
     private void processActors() {
       int e2Max = Math.min(e1 + given.maxDiff, e2Limit - 1);
       int e2Min = e1 + given.minDiff;
@@ -132,6 +145,10 @@ public class PhotographyDirector {
       } while (e2 < e2Limit && e2 != UNDEFINED);
     }
     
+    /**
+     * This method counts all valid tails for the current valid actor, 
+     * and updates the global counter as well as the cached actors' tails values.
+     */
     private void countTails() {
       int e3Min = e2 + given.minDiff;
       int e3Max = Math.min(given.inputLen - 1, e2 + given.maxDiff);
