@@ -47,7 +47,7 @@ public class PhotographyDirector {
     private Hashtable<Integer, Integer> actorsTails = new Hashtable<>();
     private int e1Limit;
     private int e2Limit;
-    private int artisticCount = 0;
+    private long artisticCount = 0;
     private int e2Reset = UNDEFINED;
     private int e1 = UNDEFINED;
     private int e2 = UNDEFINED;
@@ -174,7 +174,7 @@ public class PhotographyDirector {
       this.actorsTails = null;
     }
     
-    public int getCount() {
+    public long getCount() {
       return this.artisticCount;
     }
   }
@@ -191,7 +191,7 @@ public class PhotographyDirector {
    * @param Y - the maximum allowed index difference between selected letters
    * @return - the number of specified combinations that can be found within the provided input string.
    */
-  public static int getArtisticPhotographCount(int N, String C, int X, int Y) {
+  public static long getArtisticPhotographCount(int N, String C, int X, int Y) {
     if (null == C || N != C.length() || 0 == N || 0 >= X || 0 >= Y || X > Y || Y > N) {
       throw new IllegalArgumentException("Input parameters do not satisfy task criteria");
     }
@@ -204,7 +204,7 @@ public class PhotographyDirector {
     // there's a chance for artistic photos - search
     ArtisticCounter countProcessPAB = new ArtisticCounter(given, P);
     countProcessPAB.run();
-    int result = countProcessPAB.getCount();
+    long result = countProcessPAB.getCount();
     countProcessPAB.decompose();
     countProcessPAB = null;
     ArtisticCounter countProcessBAP = new ArtisticCounter(given, B);
