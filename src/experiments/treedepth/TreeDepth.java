@@ -2,9 +2,26 @@ package experiments.treedepth;
 
 import java.util.ArrayList;
 
+/**
+ * Class that provides a solution to a problem 
+ * where you need to add all the numbers that the digits create from root to each leaf 
+ * and return the sum. See {@link #sumBranches(TreeNode)} for examples and details.
+ * @since March, 2024
+ */
 public class TreeDepth {
+  /** State for each node in non-recursive tree traversal */
   public enum TraversingState {NEUTRAL, LEFT, RIGHT};
+  
+  /**
+   * Tree as defined in the problem description
+   *  (have to have separate fields for left and right child and a value).
+   *  For the purpose of brevity the children are public without getter and setter.
+   *  The method {@code equals()} and {@code hashcode()} aren't overridden
+   *  because this task doesn't require it, but they probably should be
+   *  if the tree was to be used someplace else.
+   */
   public static class TreeNode {
+    
     public TreeNode leftChild = null;
     public TreeNode rightChild = null;
     /** supposed to be single digit. Could have used char and convert */
@@ -29,6 +46,8 @@ public class TreeDepth {
       this.leftChild = left;
       return this;
     }
+    
+    @Override
     public String toString() {
       return "" + this.value + "(" + 
           (null == this.leftChild? null : this.leftChild.value) + 
@@ -36,6 +55,10 @@ public class TreeDepth {
     }
   }
 
+  /**
+   * Basically a stack member for keeping traversing state to avoid recursion.
+   * It's a struct-like thing, so again for brevity no getters and setters and public access.
+   */
   public static class TraverseInfo {
     public final TreeNode node;
     public TraversingState state = TraversingState.NEUTRAL;
@@ -43,8 +66,9 @@ public class TreeDepth {
       this.node = current;
     }
   }
+  
   /**
-   * you need to add all the numbers that the digits create from root to each leaf and return the sum
+   * Add all the numbers that the digits create from root to each leaf and return the sum
    * Empty tree results in 0 being returned.
    * 
    * Example:
@@ -68,9 +92,11 @@ public class TreeDepth {
     if (null == root) {
       return 0;
     }
-    // TODO implement
+    
+    // stack that allows to avoid recursion.
     ArrayList<TraverseInfo> remains = new ArrayList<>();
     TraverseInfo current = new TraverseInfo(root);
+    // number currently accumulated from all already-traversed ancestors
     int curNumber = 0;
     remains.add(current);
     while (remains.size() > 0) {
@@ -120,7 +146,6 @@ public class TreeDepth {
   }
   
   public static void main(String[] args) {
-    // TODO create sample trees and test
     TreeNode test1 = new TreeNode(3);
     test1.leftChild = new TreeNode(4);
     test1.leftChild.leftChild = new TreeNode(1);
@@ -141,5 +166,9 @@ public class TreeDepth {
         new TreeNode(5)
     );
     System.out.println(sumBranches(test2));
+    
+    TreeNode test3 = new TreeNode(1);
+    System.out.println(sumBranches(test3));
+    System.out.println(sumBranches(null));
   }
 }
