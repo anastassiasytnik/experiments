@@ -7,7 +7,6 @@ public class TreeDepth {
   public static class TreeNode {
     public TreeNode leftChild = null;
     public TreeNode rightChild = null;
-    public TraversingState state = TraversingState.NEUTRAL;
     /** supposed to be single digit. Could have used char and convert */
     public final int value;
     
@@ -33,11 +32,17 @@ public class TreeDepth {
     public String toString() {
       return "" + this.value + "(" + 
           (null == this.leftChild? null : this.leftChild.value) + 
-          ", " + (null == this.rightChild? null : this.rightChild.value) + ")," + 
-          this.state;
+          ", " + (null == this.rightChild? null : this.rightChild.value) + ")"; 
     }
   }
 
+  public static class TraverseInfo {
+    public final TreeNode node;
+    public TraversingState state = TraversingState.NEUTRAL;
+    public TraverseInfo(TreeNode current) {
+      this.node = current;
+    }
+  }
   /**
    * you need to add all the numbers that the digits create from root to each leaf and return the sum
    * Empty tree results in 0 being returned.
@@ -64,14 +69,14 @@ public class TreeDepth {
       return 0;
     }
     // TODO implement
-    ArrayList<TreeNode> remains = new ArrayList<>();
-    TreeNode current = root;
+    ArrayList<TraverseInfo> remains = new ArrayList<>();
+    TraverseInfo current = new TraverseInfo(root);
     int curNumber = 0;
     remains.add(current);
     while (remains.size() > 0) {
-      curNumber = curNumber * 10 + current.value;
+      curNumber = curNumber * 10 + current.node.value;
       // if it's a leaf - get the number and add to the result.
-      if (null == current.leftChild && null == current.rightChild) {
+      if (null == current.node.leftChild && null == current.node.rightChild) {
         result += curNumber;
         System.out.println("New leaf number is: " + curNumber);
         System.out.println(">>Result: " + result);
@@ -82,22 +87,22 @@ public class TreeDepth {
         curNumber /= 100;
         remains.remove(remains.size() - 1);
         if (0 < remains.size()) {
-          current = remains.get(remains.size() - 1);
+          current = (remains.get(remains.size() - 1));
         }
       } else if (TraversingState.NEUTRAL == current.state 
-            && null != current.leftChild) {
+            && null != current.node.leftChild) {
         // this isn't a leaf.
         // only go to the left if we haven't been there yet
         current.state = TraversingState.LEFT;
         // if we have left child - move to the left child
-        current = current.leftChild;
+        current = new TraverseInfo(current.node.leftChild);
         remains.add(current);
       } else if (TraversingState.RIGHT != current.state 
-          && null != current.rightChild) { 
+          && null != current.node.rightChild) { 
         // this isn't a leaf, 
         // and we checked left child, but didn't check the right yet
         current.state = TraversingState.RIGHT;
-        current = current.rightChild;
+        current = new TraverseInfo(current.node.rightChild);
         remains.add(current);
       } else {
         // this isn't a leaf 
